@@ -5,6 +5,7 @@ dotenv.config();
 import mongoose from "mongoose";
 import MyUserRouter from "./Router/MyUserRouer";
 import MyRestaurantRouter from "./Router/MyRestaurantRouter";
+import MySearchRestaurantRouter from "./Router/MySearchRestaurantRouter";
 import {v2 as cloudinary} from "cloudinary";
 
 const app = express();
@@ -26,6 +27,7 @@ app.get("/health",(req:Request,res:Response) =>
 
 app.use("/api/v1/user",MyUserRouter);
 app.use("/api/v1/restaurant",MyRestaurantRouter);
+app.use("/api/v1/restaurant",MySearchRestaurantRouter)
 
 mongoose.connect(process.env.MONGODB_CONNECTION_URL as string)
 .then(()=>

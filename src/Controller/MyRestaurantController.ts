@@ -151,9 +151,8 @@ export const updateRestaurant = async(req:Request,res:Response) =>
                  const dataUrl = `data:${image.mimetype};base64,${base64Image}`;
                  const uploadResource = await cloudinary.v2.uploader.upload(dataUrl);
                  restaurant.imageUrl = uploadResource.url;
-
               }
-              
+                 
               await restaurant.save();
               return res.json
               ({
