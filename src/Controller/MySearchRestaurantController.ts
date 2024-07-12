@@ -82,11 +82,38 @@ const SearchRestauranByCity = async(req:Request,res:Response) =>
                  })
     }
 
-
-
+      const findRestaurantById = async(req:Request,res:Response) =>
+        { 
+           try {
+            const restaurantId = req.params.restaurantId;
+            const restaurant = await restaurantModel.findById(restaurantId);
+            if(!restaurant)
+                {
+                    return res.json
+                    ({
+                        code:404,
+                        message:"Restaurant Id not found"
+                    })
+                }
+                return res.json
+                ({
+                    code:200,
+                    restaurant:restaurant
+                })
+           } catch (error:any) {
+            console.error("An error occurred:", error.message);
+            return res.json
+            ({
+              code: 500,
+              message: "An error occurred during restaurant By Id",
+              error: error.message,
+            })
+          }
+        }
 
     export default
     {
-        SearchRestauranByCity
+        SearchRestauranByCity,
+        findRestaurantById
     }
 

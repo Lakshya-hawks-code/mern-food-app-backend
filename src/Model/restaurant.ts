@@ -11,10 +11,12 @@ const menuItemSchema = new mongoose.Schema({
     required: true,
   },
   price: {
-    type: String,
+    type: Number,
     required: true,
   },
 });
+
+
 
 export type MenuItemType = InferSchemaType<typeof menuItemSchema>;
 
