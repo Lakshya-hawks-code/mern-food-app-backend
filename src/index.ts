@@ -30,6 +30,7 @@ app.use("/api/v1/user",MyUserRouter);
 app.use("/api/v1/restaurant",MyRestaurantRouter);
 app.use("/api/v1/restaurant",MySearchRestaurantRouter)
 app.use("/api/v1/order",MyOrderRouter);
+app.use("/api/v1/order/checkout/webhook", express.raw({type : "*/*"}))
 
 mongoose.connect(process.env.MONGODB_CONNECTION_URL as string)
 .then(()=>
