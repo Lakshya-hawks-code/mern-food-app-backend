@@ -11,6 +11,8 @@ import {v2 as cloudinary} from "cloudinary";
 
 const app = express();
 
+// create webhook using complete the checkout.session.completed in a stripe
+app.use("/api/v1/order/checkout/webhook", express.raw({type : "*/*"}))
 app.use(express.json());
 app.use(cors());
 
@@ -30,7 +32,6 @@ app.use("/api/v1/user",MyUserRouter);
 app.use("/api/v1/restaurant",MyRestaurantRouter);
 app.use("/api/v1/restaurant",MySearchRestaurantRouter)
 app.use("/api/v1/order",MyOrderRouter);
-app.use("/api/v1/order/checkout/webhook", express.raw({type : "*/*"}))
 
 mongoose.connect(process.env.MONGODB_CONNECTION_URL as string)
 .then(()=>
