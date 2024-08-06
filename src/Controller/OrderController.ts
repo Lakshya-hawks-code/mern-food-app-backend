@@ -175,7 +175,40 @@ const stripeWebHookHandler = async(req:Request,res:Response) =>
 
 
 
+
+// Find Order in any user 
+
+const getMyOrder = async(req:Request,res:Response) => {
+       try {
+          const findOrder = await orderModel.find({user : req.userId}).populate("restaurant").populate("user")
+          if(!findOrder)
+          {
+            return res.json
+            ({
+              code : 404,
+              message : "User order not found"
+            })
+          }
+          return res.json
+          ({
+            code : 200,
+            order : findOrder,
+            message : "User order found successfully"
+          })
+       } catch (error: any) {
+        console.error("An error occurred:", error.message);
+        return res.status(500).json({
+          code: 500,
+          message: "An error occurred during find a order!",
+          error: error.message,
+        });
+      }
+}
+
+
+
 export default {
   createCheckOutSession,
-  stripeWebHookHandler
+  stripeWebHookHandler,
+  getMyOrder
 };

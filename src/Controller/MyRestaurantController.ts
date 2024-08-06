@@ -3,6 +3,7 @@ import restaurantModel from "../Model/restaurant";
 import cloudinary from "cloudinary";
 import mongoose from "mongoose";
 import Validator from "validatorjs";
+import orderModel from "../Model/Order";
 
 const createRestaurantValidation = 
 {
@@ -60,7 +61,8 @@ const createRestaurant = async (req: Request, res: Response) => {
 
     return res.json({
       code: 200,
-      message: restaurant,
+      restaurant: restaurant,
+      message: "Restaurant create successfully"
     });
   } catch (error: any) {
     console.error("An error occurred:", error.message);
@@ -173,8 +175,98 @@ export const updateRestaurant = async(req:Request,res:Response) =>
  
 
 
+  
+   const getRestaurantOrder = async(req:Request,res:Response) => 
+   {
+       try {
+          const restaurant = await restaurantModel.findOne({user : req.userId});
+          if(!restaurant)
+          {
+            return res.json
+            ({
+              code : 404,
+              message : "Restaurant not found"
+            })
+          }
+          
+          const order = await orderModel.find({restaurant:restaurant._id}).populate("restaurant").populate("user")
+          if(!order)
+          {
+            return res.json
+            ({
+              code : 404,
+              message : "Restaurant order not found"
+            })
+          }
+
+          return res.json
+          ({
+            code : 200,
+            order : order,
+            message : "Restaurant order found successfully"
+          })
+
+       } catch (error:any) {
+        console.error("An error occurred:", error.message);
+        return res.json
+        ({
+          code: 500,
+          message: "An error occurred during restaurant order found!",
+          error: error.message,
+        })
+      }
+   }
+
+
+
+
+   export const updateOrderStatus = async(req:Request,res:Response) =>
+   { 
+       try {
+          const {orderId} = req.params;
+          const {status} = req.body;
+          const order = await orderModel.findById(orderId);
+          if(!order)
+          {
+            return res.json({
+              code:404,
+              message:"Order not found!"
+            })
+          }
+          const restaurant = await restaurantModel.findById(order.restaurant);
+          if(restaurant?.user?._id.toString() !== req.userId)
+          {
+            return res.json
+            ({
+                 code : 401,
+                 message : "Unauthorized user!"
+            })
+          }
+             order.status = status;
+             await order.save();
+
+
+             return res.json({
+              code : 200,
+              order : order,
+              message : "Order status update successfully!"
+             })
+             
+       } catch (error:any) {
+        console.error("An error occurred:", error.message);
+        return res.json
+        ({
+          code: 500,
+          message: "An error occurred during find a order",
+          error: error.message,
+        })
+      }
+   }
+
 export default {
   createRestaurant,
   getMyRestaurant,
-  updateRestaurant
+  updateRestaurant,
+  getRestaurantOrder,
+  updateOrderStatus
 };
